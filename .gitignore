@@ -1,0 +1,21 @@
+# Swift / SwiftPM
+.build/
+.swiftpm/
+Package.resolved
+
+# Build output
+build/
+*.app
+*.dmg
+
+# Notarization credentials — never commit
+.env
+*.p8
+
+# Old xcodegen output
+*.xcodeproj/
+DerivedData/
+
+# macOS
+.DS_Store
+__pycache__/

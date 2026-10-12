@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 420" width="660" height="420">
+  <rect width="660" height="420" fill="#F4EDD8"/>
+  <g fill="none" stroke="#26303A" stroke-opacity="0.55" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M268,215 L392,215"/>
+    <path d="M372,197 L392,215 L372,233"/>
+  </g>
+  <text x="330" y="335" text-anchor="middle" font-family="-apple-system, Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="17" fill="#26303A" fill-opacity="0.7">Drag NanoNeo to your Applications folder</text>
+</svg>
