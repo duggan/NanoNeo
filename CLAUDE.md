@@ -90,9 +90,11 @@ keystrokes.
 - `Resources/art/make_icons.py` draws all the artwork as SVG: a top-down Neo 2
   traced from a photo. The bell silhouette, screen and keyboard are deliberate,
   with no sync symbol. `make icons` (Inkscape) renders `NanoNeo.icns`, the menu bar
-  template PNGs and the DMG background into `Resources/`. Commit them. While
-  syncing, the menu bar icon blinks between `MenuBarIconTemplate` and
+  template PNGs and the DMG background into `Resources/`. Commit them.
+  While syncing, the menu bar icon blinks between `MenuBarIconTemplate` and
   `MenuBarIconSyncingTemplate` (screen lit).
+- `make demo` renders `Resources/art/demo/scene.html` (a mock desktop driven by
+  `render(t)`) frame by frame with Playwright into `docs/demo.gif`, the README demo.
 
 ## Working on hardware
 

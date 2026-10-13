@@ -69,6 +69,20 @@ def app_icon():
 '''
 
 
+def neo_drawing():
+    """The Neo on its own, with a soft shadow, for the README demo."""
+    sx, sy, sw, sh = SCREEN
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -5 104 89" width="480" height="400">
+  <path d="{BODY_PATH}" fill="#000" fill-opacity="0.13" transform="translate(0.6 1.6)"/>
+  <path d="{BODY_PATH}" fill="{BODY}"/>
+  <rect x="{sx - 2.2}" y="{sy - 2.2}" width="{sw + 4.4}" height="{sh + 4.4}" rx="2.6" fill="{RECESS}"/>
+  <rect x="{sx}" y="{sy}" width="{sw}" height="{sh}" rx="1" fill="{LCD}"/>
+  <path d="{RECESS_PATH}" fill="{RECESS}"/>
+  <g fill="{KEY}">{keycaps()}</g>
+</svg>
+'''
+
+
 def menu_bar_glyph(lit=False):
     """Template image, 22x18 pt: the silhouette with the screen and three rows of
     keys knocked out. `lit` fills the screen back in, for the syncing state."""
@@ -110,7 +124,8 @@ if __name__ == "__main__":
     for name, svg in (("AppIcon.svg", app_icon()),
                       ("MenuBarIcon.svg", menu_bar_glyph()),
                       ("MenuBarIconSyncing.svg", menu_bar_glyph(lit=True)),
-                      ("DMGBackground.svg", dmg_background())):
+                      ("DMGBackground.svg", dmg_background()),
+                      ("Neo.svg", neo_drawing())):
         with open(os.path.join(HERE, name), "w") as f:
             f.write(svg)
         print("wrote", name)

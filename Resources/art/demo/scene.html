@@ -1,0 +1,220 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<!-- The README demo. `make demo` renders render(t) frame by frame into docs/demo.gif. -->
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 960px; height: 540px; overflow: hidden; }
+  body {
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+    background: linear-gradient(160deg, #F7F1E1 0%, #EADFC4 100%);
+    position: relative; color: #26303A;
+  }
+  #menubar {
+    position: absolute; left: 0; top: 0; width: 960px; height: 26px; z-index: 10;
+    background: rgba(255,255,255,0.72); backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    display: flex; align-items: center; font-size: 13px; padding: 0 14px;
+  }
+  #menubar .left span { margin-right: 18px; }
+  #menubar .left b { font-weight: 700; margin-right: 18px; }
+  #menubar .right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+  #nanoicon { width: 22px; height: 18px; display: block; }
+  #nanowrap { padding: 2px 6px; border-radius: 5px; }
+  #nanowrap.open { background: rgba(0,0,0,0.12); }
+
+  #neo { position: absolute; left: 40px; top: 92px; }
+  #lcdtext {
+    position: absolute; font-family: Menlo, Monaco, monospace; font-size: 10.2px; line-height: 12.4px;
+    color: #283023; white-space: pre; overflow: hidden;
+  }
+  .cursor { display: inline-block; width: 6px; height: 11px; background: #283023; vertical-align: -1px; }
+
+  #cable { position: absolute; z-index: 5; }
+
+  #finder {
+    position: absolute; left: 532px; top: 236px; width: 404px; height: 214px;
+    background: #fff; border-radius: 11px; overflow: hidden;
+    box-shadow: 0 18px 50px rgba(60,45,20,0.22), 0 0 0 0.5px rgba(0,0,0,0.18);
+  }
+  #finder .bar {
+    height: 40px; display: flex; align-items: center; padding: 0 14px; gap: 7px;
+    background: #F4F3F1; border-bottom: 1px solid #E3E1DD; font-size: 13px; font-weight: 600;
+  }
+  .dot { width: 12px; height: 12px; border-radius: 6px; }
+  #finder .bar .title { margin-left: 14px; }
+  #finder .head { display: flex; font-size: 11px; color: #8A8780; padding: 6px 14px 4px; border-bottom: 1px solid #EEECE8; }
+  .row { display: flex; align-items: center; font-size: 12.5px; padding: 0 8px; margin: 2px 6px; height: 24px; border-radius: 5px; }
+  .row .name { flex: 1; display: flex; align-items: center; gap: 7px; white-space: nowrap; overflow: hidden; }
+  .row .when { color: #8A8780; font-size: 11.5px; width: 92px; text-align: right; }
+  .row.sel { background: #2F6FDB; color: #fff; }
+  .row.sel .when { color: rgba(255,255,255,0.85); }
+  .doc { width: 13px; height: 16px; border-radius: 2px; background: #fff; border: 1px solid #B8B5AE; flex: none; position: relative; }
+  .row.sel .doc { border-color: #fff; }
+
+  #notif {
+    position: absolute; top: 36px; left: 600px; width: 346px; z-index: 9;
+    background: rgba(250,248,244,0.92); backdrop-filter: blur(20px);
+    border-radius: 16px; padding: 11px 13px; display: flex; gap: 11px;
+    box-shadow: 0 10px 34px rgba(60,45,20,0.20), 0 0 0 0.5px rgba(0,0,0,0.12);
+  }
+  #notif img { width: 34px; height: 34px; flex: none; }
+  #notif .t { font-size: 13px; font-weight: 600; }
+  #notif .b { font-size: 12.5px; color: #45474C; margin-top: 1px; white-space: nowrap; }
+  #notif .app { font-size: 11px; color: #8A8780; position: absolute; right: 14px; top: 11px; }
+
+  #menu {
+    position: absolute; top: 30px; z-index: 11; width: 250px;
+    background: rgba(246,244,240,0.95); backdrop-filter: blur(20px);
+    border-radius: 9px; padding: 5px; font-size: 13px;
+    box-shadow: 0 12px 36px rgba(60,45,20,0.22), 0 0 0 0.5px rgba(0,0,0,0.18);
+  }
+  #menu div { padding: 3px 9px; border-radius: 5px; display: flex; }
+  #menu .dim { color: #8A8780; }
+  #menu .sep { height: 1px; background: rgba(0,0,0,0.1); margin: 5px 9px; padding: 0; }
+  #menu kbd { margin-left: auto; font-family: inherit; color: #8A8780; }
+  #menu .hl { background: #2F6FDB; color: #fff; }
+  #menu .hl kbd { color: rgba(255,255,255,0.85); }
+
+  #caption {
+    position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; z-index: 8;
+    font-size: 19px; font-weight: 600; letter-spacing: -0.2px; color: #26303A;
+  }
+</style></head>
+<body>
+  <div id="menubar">
+    <div class="left"><b>Finder</b><span>File</span><span>Edit</span><span>View</span><span>Go</span><span>Window</span><span>Help</span></div>
+    <div class="right">
+      <div id="nanowrap"><img id="nanoicon" src="../MenuBarIcon.svg"></div>
+      <span>Mon 12 Oct&nbsp; 21:04</span>
+    </div>
+  </div>
+
+  <svg id="cable" width="60" height="140" viewBox="0 0 60 140">
+    <path d="M30,0 L30,96" stroke="#3B3F46" stroke-width="7" stroke-linecap="round" fill="none"/>
+    <rect x="18" y="92" width="24" height="34" rx="5" fill="#4A4F58"/>
+    <rect x="22" y="124" width="16" height="10" rx="1.5" fill="#B9BCC2"/>
+  </svg>
+
+  <img id="neo" src="../Neo.svg" width="480" height="400">
+  <div id="lcdtext"></div>
+
+  <div id="notif">
+    <img src="../AppIcon.svg">
+    <div>
+      <div class="t">Saved 1 draft from the Neo</div>
+      <div class="b">2026-10-12 2104 The lighthouse keeper</div>
+    </div>
+    <div class="app">now</div>
+  </div>
+
+  <div id="menu">
+    <div class="dim">Neo connected</div>
+    <div class="dim">Last sync: 21:04 — 1 draft saved</div>
+    <div class="sep"></div>
+    <div>Sync Now<kbd>⌘S</kbd></div>
+    <div id="openfolder">Open Folder<kbd>⌘O</kbd></div>
+    <div class="sep"></div>
+    <div>Settings…<kbd>⌘,</kbd></div>
+    <div class="sep"></div>
+    <div>Quit NanoNeo<kbd>⌘Q</kbd></div>
+  </div>
+
+  <div id="finder">
+    <div class="bar">
+      <div class="dot" style="background:#FF5F57"></div><div class="dot" style="background:#FEBC2E"></div><div class="dot" style="background:#28C840"></div>
+      <span class="title">Neo</span>
+    </div>
+    <div class="head"><span style="flex:1">Name</span><span>Date Modified</span></div>
+    <div id="rows"></div>
+  </div>
+
+  <div id="caption"></div>
+
+<script>
+const [SX, SY, SW, SH] = [25.6, 12.3, 46.2, 13.0];  // SCREEN in make_icons.py
+
+// Place the LCD text box over the screen rect. viewBox (-2,-5) 104x89 → 480x400.
+const k = 480 / 104, neoX = 40, neoY = 92;
+const lcd = document.getElementById('lcdtext');
+Object.assign(lcd.style, {
+  left: (neoX + (SX + 2 + 2) * k) + 'px', top: (neoY + (SY + 5 + 0.6) * k) + 'px',
+  width: ((SW - 3) * k) + 'px', height: ((SH - 1.0) * k) + 'px',
+});
+// Cable plugs into the top edge, a little right of centre.
+const plugX = neoX + (66 + 2) * k - 30, plugY = neoY + (1.0 + 5) * k - 128;
+
+const TEXT = "The lighthouse keeper\nHe kept no lights, only a\nlog of every ship that\npassed in the night.";
+const OLD = [["2026-10-09 0731 Notes for Tuesday", "9 Oct 07:31"], ["2026-10-10 2215 Untitled", "10 Oct 22:15"]];
+const NEW = ["2026-10-12 2104 The lighthouse keeper", "Today 21:04"];
+
+const T = 14.0;  // loop length, seconds
+const clamp = (x, a=0, b=1) => Math.min(b, Math.max(a, x));
+const ease = x => { x = clamp(x); return x < 0.5 ? 4*x*x*x : 1 - Math.pow(-2*x + 2, 3) / 2; };
+const ramp = (t, a, b) => ease((t - a) / (b - a));
+
+function rowsHTML(withNew, sel) {
+  const r = (n, w, cls='') => `<div class="row ${cls}"><span class="name"><span class="doc"></span>${n}.txt</span><span class="when">${w}</span></div>`;
+  return (withNew ? r(NEW[0], NEW[1], sel ? 'sel' : '') : '') + OLD.slice().reverse().map(o => r(o[0], o[1])).join('');
+}
+
+function caption(t) {
+  const caps = [[0.3, 3.4, "Write on your Neo"], [3.4, 5.0, "Plug it in"],
+                [5.0, 8.0, "NanoNeo saves each draft to your Mac"], [8.0, 10.4, "and clears the Neo for the next one"],
+                [10.5, 12.9, "Your drafts are one click away"]];
+  for (const [a, b, s] of caps) if (t >= a && t < b) {
+    const o = Math.min(clamp((t - a) / 0.3), clamp((b - t) / 0.3));
+    return [s, o];
+  }
+  return ["", 0];
+}
+
+window.render = function (t) {
+  // Typing 0.5–3.0 s; cleared once the sync finishes at 6.4 s.
+  const n = Math.round(clamp((t - 0.5) / 2.5) * TEXT.length);
+  const cleared = t >= 6.4 && t < T - 0.2;
+  const blinkOn = Math.floor(t * 2.2) % 2 === 0 || (t > 0.5 && t < 3.0);
+  const shown = cleared ? "" : TEXT.slice(0, n);
+  lcd.innerHTML = shown.replace(/&/g, '&amp;').replace(/</g, '&lt;') + (blinkOn ? '<span class="cursor"></span>' : '');
+
+  // Cable down 3.6–4.2, back up 12.6–13.3.
+  const down = ramp(t, 3.6, 4.2) - ramp(t, 12.6, 13.3);
+  const cable = document.getElementById('cable');
+  cable.style.left = plugX + 'px';
+  cable.style.top = (plugY - 150 * (1 - down)) + 'px';
+
+  // Syncing 4.4–6.4: menu bar icon blinks every 0.5 s, like the app.
+  const syncing = t >= 4.4 && t < 6.4;
+  const lit = syncing && Math.floor((t - 4.4) / 0.5) % 2 === 0;
+  document.getElementById('nanoicon').src = lit ? '../MenuBarIconSyncing.svg' : '../MenuBarIcon.svg';
+
+  // Notification slides in at 6.5, out at 10.0.
+  const nIn = ramp(t, 6.5, 6.9) - ramp(t, 9.8, 10.2);
+  const notif = document.getElementById('notif');
+  notif.style.transform = `translateX(${(1 - nIn) * 380}px)`;
+  notif.style.opacity = nIn;
+
+  // New file appears in Finder at 6.7, selected for a moment.
+  const withNew = t >= 6.7 && t < T - 0.4;
+  document.getElementById('rows').innerHTML = rowsHTML(withNew, t >= 6.7 && t < 8.4);
+  const first = document.querySelector('#rows .row');
+  if (withNew) first.style.opacity = clamp((t - 6.7) / 0.3);
+  if (t >= T - 0.8 && t < T - 0.4 && first) first.style.opacity = 1 - clamp((t - (T - 0.8)) / 0.4);
+
+  // Menu opens 10.6–12.3.
+  const menuOpen = t >= 10.6 && t < 12.3;
+  const menu = document.getElementById('menu');
+  const wrap = document.getElementById('nanowrap');
+  wrap.classList.toggle('open', menuOpen);
+  const r = wrap.getBoundingClientRect();
+  menu.style.left = Math.min(r.left - 6, 960 - 250 - 8) + 'px';
+  menu.style.display = menuOpen ? 'block' : 'none';
+  document.getElementById('openfolder').classList.toggle('hl', t >= 11.3 && t < 12.3);
+
+  const [s, o] = caption(t);
+  const cap = document.getElementById('caption');
+  cap.textContent = s; cap.style.opacity = o;
+};
+window.LOOP = T;
+render(0);
+</script>
+</body></html>

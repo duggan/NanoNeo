@@ -34,7 +34,7 @@ DMG_OPTS  := --volname "$(APP_NAME)" \
              --icon "$(APP_NAME).app" 175 215 --hide-extension "$(APP_NAME).app" \
              --app-drop-link 485 215 --no-internet-enable
 
-.PHONY: all build bundle sign run test icons dmg release notary-setup clean help
+.PHONY: all build bundle sign run test icons demo dmg release notary-setup clean help
 
 all: sign ## Build, bundle, and sign (default)
 
@@ -88,6 +88,18 @@ icons: ## Regenerate artwork from Resources/art/make_icons.py (needs Inkscape)
 	tiffutil -cathidpicheck "$$TMP/bg.png" "$$TMP/bg@2x.png" -out "$(DMG_BACKGROUND)" 2>/dev/null; \
 	rm -rf "$$TMP"; \
 	echo "Wrote $(APP_ICON), Resources/MenuBarIcon*Template*.png and $(DMG_BACKGROUND)"
+
+demo: ## Render the README demo, docs/demo.gif (needs Node, Chrome, ffmpeg)
+	@set -e; command -v ffmpeg >/dev/null || { echo "ffmpeg is required: brew install ffmpeg" >&2; exit 1; }; \
+	TMP="$$(mktemp -d)"; \
+	python3 Resources/art/make_icons.py >/dev/null; \
+	npm install --silent --prefix "$$TMP" playwright@1.48.2 >/dev/null; \
+	NODE_PATH="$$TMP/node_modules" node Resources/art/demo/render.js "$$TMP/frames"; \
+	ffmpeg -v error -y -framerate 20 -i "$$TMP/frames/%04d.png" \
+	  -vf "scale=1280:-1:flags=lanczos,split[a][b];[a]palettegen=stats_mode=full[p];[b][p]paletteuse=dither=none:diff_mode=rectangle" \
+	  -loop 0 docs/demo.gif; \
+	rm -rf "$$TMP"; \
+	echo "Wrote docs/demo.gif"
 
 dmg: sign ## Build a signed (not-yet-notarized) styled DMG for local testing
 	@command -v create-dmg >/dev/null || { echo "create-dmg not found: brew install create-dmg" >&2; exit 1; }

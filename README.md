@@ -12,6 +12,10 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue" alt="License: GPL-3.0"></a>
 </p>
 
+<p align="center">
+  <img src="docs/demo.gif" width="800" alt="Typing a draft on the Neo, plugging it in, and the draft appearing as a text file on the Mac while the Neo's screen clears">
+</p>
+
 NanoNeo is a macOS menu bar app for the [AlphaSmart Neo and Neo 2](https://en.wikipedia.org/wiki/AlphaSmart).
 When you connect the Neo over USB, NanoNeo saves each of its AlphaWord files to your Mac as a
 plain text file. You don't need to press **Send** and wait while the Neo types your text out a
@@ -61,7 +65,7 @@ the same protocol and should work. If you try one, please
 ## Development
 
 You need Xcode 16 or later and a Developer ID signing identity. `make dmg` also needs
-`create-dmg`, and `make icons` needs Inkscape.
+`create-dmg`, `make icons` needs Inkscape, and `make demo` (the GIF above) needs Node, Chrome, and ffmpeg.
 
 ```sh
 make run       # build a universal app, sign it, and launch it
